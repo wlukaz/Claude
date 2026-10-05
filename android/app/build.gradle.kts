@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.wlukaz.loseitsync"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.wlukaz.loseitsync"
