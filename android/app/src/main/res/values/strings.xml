@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoseIt Sync</string>
+    <string name="privacy_text">LoseIt Sync reads the nutrition and weight records that LoseIt writes to Health Connect and sends them only to the Google Apps Script URL you enter in this app, which saves them to a Google Sheet in your own Google Drive. Nothing is sent anywhere else.</string>
+</resources>
