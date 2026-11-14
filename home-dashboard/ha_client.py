@@ -28,7 +28,8 @@ class _WebSocket:
         host = u.hostname
         port = u.port or (443 if secure else 80)
         path = u.path or "/"
-        raw = socket.create_connection((host, port), timeout=timeout)
+        raw = socket.create_connection((host, port), timeout=8)
+        raw.settimeout(timeout)
         if secure:
             ctx = ssl.create_default_context()
             if os.environ.get("HA_INSECURE_TLS") == "1":

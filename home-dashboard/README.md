@@ -29,7 +29,31 @@ Tabs only appear when you have something for them, and nothing needs HACS or cus
   Home Assistant to make a **full system backup** (Settings > System > Backups).
 - It does not change devices, automations, integrations or settings.
 
-## Run it (about 5 minutes)
+## Run it from your phone (about 5 minutes)
+
+Everything happens inside Home Assistant, so your phone just needs to be able to open
+Home Assistant (the app or a browser).
+
+1. **Add the Terminal.** Settings > Add-ons > Add-on store > **Terminal & SSH** > Install >
+   Start, and turn on **Show in sidebar**. (Add-ons need Home Assistant OS, which is what most
+   people run, including Home Assistant Green/Yellow.)
+2. **Make a token.** Tap your name (bottom of the sidebar) > **Security** tab >
+   **Long-lived access tokens** > **Create token**. Name it "Home Hub", then copy it.
+3. **Open Terminal** from the sidebar and paste this one line:
+
+   ```sh
+   sh -c "$(curl -fsSL https://raw.githubusercontent.com/wlukaz/Claude/ccr-72ad690a-51r2a3/home-dashboard/get.sh)"
+   ```
+
+   When asked for the address, press Enter. When asked for the token, paste it (nothing shows
+   while pasting, that's normal) and press Enter.
+4. Refresh the app: **Home Hub** is in the sidebar.
+
+Backups go to the `home-hub/backups` folder in your Home Assistant config. They're also
+included in Home Assistant's own backups. To undo, paste the same line with ` _ restore` added
+at the end.
+
+## Run it from a computer
 
 You need any computer on your home network with Python 3.9 or newer (Mac and Linux have it;
 on Windows install it from python.org). Nothing else to install.

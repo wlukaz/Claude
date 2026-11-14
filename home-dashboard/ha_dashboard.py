@@ -72,19 +72,34 @@ REMOTE_PROFILES = {
 
 # --------------------------------------------------------------------------- connection
 
+# Tried in order when no address is given. The last two work from inside
+# Home Assistant itself (e.g. the Terminal & SSH add-on).
+DEFAULT_URLS = ["http://homeassistant.local:8123", "http://homeassistant:8123",
+                "http://localhost:8123"]
+
+
 def connect() -> HomeAssistant:
     url = os.environ.get("HA_URL") or input(
-        "Home Assistant address [http://homeassistant.local:8123]: "
-    ).strip() or "http://homeassistant.local:8123"
+        "Home Assistant address [press Enter to find it automatically]: "
+    ).strip()
     token = os.environ.get("HA_TOKEN") or getpass.getpass(
         "Long-lived access token (Profile > Security > Long-lived access tokens): "
     ).strip()
-    try:
-        ha = HomeAssistant(url, token)
-    except (OSError, HAError) as e:
-        sys.exit(f"Could not connect to Home Assistant at {url}: {e}")
-    print(f"Connected to Home Assistant {ha.version} at {url}")
-    return ha
+    last_error: Exception | None = None
+    for candidate in [url] if url else DEFAULT_URLS:
+        try:
+            ha = HomeAssistant(candidate, token)
+        except HAError as e:
+            if "Login failed" in str(e):
+                sys.exit(str(e))
+            last_error = e
+            continue
+        except OSError as e:
+            last_error = e
+            continue
+        print(f"Connected to Home Assistant {ha.version} at {candidate}")
+        return ha
+    sys.exit(f"Could not connect to Home Assistant ({url or ', '.join(DEFAULT_URLS)}): {last_error}")
 
 
 # --------------------------------------------------------------------------- backup
