@@ -165,14 +165,25 @@ def create_full_backup(ha: HomeAssistant) -> None:
         ("backup", "create_automatic", {}),               # Core / Container, 2025.1+
         ("backup", "create", {}),                         # older Core / Container
     ]
-    for domain, service, data in attempts:
-        try:
-            ha.call("call_service", domain=domain, service=service, service_data=data)
-            print(f"Full Home Assistant backup started ({domain}.{service}). "
-                  "It appears under Settings > System > Backups in a few minutes.")
-            return
-        except HAError:
-            continue
+    print("Making a full Home Assistant backup first. This can take several minutes, "
+          "please leave this screen open...", flush=True)
+    # A full backup call only returns when the backup is finished, so wait up to 30 minutes.
+    ha.ws.sock.settimeout(1800)
+    try:
+        for domain, service, data in attempts:
+            try:
+                ha.call("call_service", domain=domain, service=service, service_data=data)
+                print(f"Full Home Assistant backup done ({domain}.{service}). "
+                      "It is listed under Settings > System > Backups.")
+                return
+            except HAError:
+                continue
+    except OSError:
+        sys.exit("The full backup is taking very long; it keeps running in Home Assistant. "
+                 "Once it shows under Settings > System > Backups, run this again with "
+                 "--no-full-backup.")
+    finally:
+        ha.ws.sock.settimeout(60)
     print("Note: could not start a full system backup automatically. The dashboard "
           "backup above is enough to undo this tool; for a full system backup use "
           "Settings > System > Backups > Back up now.")

@@ -3,6 +3,7 @@
 # (works from a phone). Usage, pasted into the terminal:
 #   sh -c "$(curl -fsSL https://raw.githubusercontent.com/wlukaz/Claude/ccr-72ad690a-51r2a3/home-dashboard/get.sh)"
 # Undo later with the same line followed by:  _ restore
+# Extra options also go after the _ , e.g.:  _ install --no-full-backup
 set -e
 BASE=https://raw.githubusercontent.com/wlukaz/Claude/ccr-72ad690a-51r2a3/home-dashboard
 
@@ -22,4 +23,5 @@ done
 
 echo "Home Hub files are in $DIR"
 echo "When asked for the address, just press Enter."
-python3 ha_dashboard.py "${1:-install}"
+[ $# -eq 0 ] && set -- install
+python3 ha_dashboard.py "$@"
